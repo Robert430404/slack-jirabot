@@ -12,6 +12,8 @@ const config = {
     strictSSL: false,
     regex: '([A-Z][A-Z0-9]+-[0-9]+)',
     sprintField: '',
+    disablePretext: true,
+    disableFootnote: true,
     customFields: {
 
     },

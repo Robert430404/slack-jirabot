@@ -2,6 +2,7 @@
 
 const test = require('tape');
 const Bot = require(`${process.env.PWD}/lib/bot`);
+const ResponseTransformer = require(`${process.env.PWD}/lib/responseTransformer`);
 const configDist = require(`${process.env.PWD}/config.default.js`);
 
 test('Bot: instantiate and set config', (assert) => {
@@ -62,9 +63,10 @@ test('Bot: translate a jira username to a slack username', (assert) => {
 
   const bot = new Bot(configDist);
 
-  assert.equal(bot.jira2Slack('foo'), '@bar');
-  assert.equal(bot.jira2Slack('ping'), '@pong');
-  assert.notOk(bot.jira2Slack('blap'));
+
+  assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'foo'), '@bar');
+  assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'ping'), '@pong');
+  assert.notOk(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'blap'));
   assert.end();
 });
 
@@ -128,19 +130,19 @@ test('Bot: cleanup the ticket buffer', (assert) => {
 
 test('Bot: return a default description if empty', (assert) => {
   const bot = new Bot(configDist);
-  assert.equal(bot.formatIssueDescription(''), 'Ticket does not contain a description');
+  assert.equal(ResponseTransformer.transformDescription(''), 'Ticket does not contain a description');
   assert.end();
 });
 
 test('Bot: replace quotes', (assert) => {
   const bot = new Bot(configDist);
-  assert.equal(bot.formatIssueDescription('{quote}foo{quote}'), '```foo```');
+  assert.equal(ResponseTransformer.transformDescription('{quote}foo{quote}'), '```foo```');
   assert.end();
 });
 
 test('Bot: replace code blocks', (assert) => {
   const bot = new Bot(configDist);
-  assert.equal(bot.formatIssueDescription('{code}foo{code}'), '```foo```');
+  assert.equal(ResponseTransformer.transformDescription('{code}foo{code}'), '```foo```');
   assert.end();
 });
 
@@ -314,7 +316,7 @@ test('Bot: Check formatting', (assert) => {
     }
   };
 
-  const expectedText = '\n *Heading*\n\nFoo foo _foo_ foo foo foo\n' +
+  const expectedText = '`Status: Open` `Priority: Low`\n *Heading*\n\nFoo foo _foo_ foo foo foo\n' +
     '• Bulleted List\n  • Indented more\n• Indented less\n\n' +
     '• Bulleted Dash List\n• Bulleted Dash List\n• Bulleted Dash List\n\n' +
     '1. Numbered List\n' +
@@ -351,5 +353,12 @@ test('Bot: Check formatting', (assert) => {
   const response = bot.issueResponse(issue);
 
   assert.equal(response.text, expectedText, 'Atlassian Markup should be converted to Slack Markup');
+  assert.end();
+});
+
+test('Should add ellipsis for shorter descriptions', (assert) => {
+  const transformed = ResponseTransformer.transformDescription('this is a test string', 10);
+
+  assert.equal(transformed, 'this is a ...');
   assert.end();
 });
