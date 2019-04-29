@@ -61,8 +61,6 @@ test('Bot: translate a jira username to a slack username', (assert) => {
     ping: 'pong'
   };
 
-  const bot = new Bot(configDist);
-
   assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'foo'), '@bar');
   assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'ping'), '@pong');
   assert.notOk(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'blap'));
@@ -128,19 +126,16 @@ test('Bot: cleanup the ticket buffer', (assert) => {
 });
 
 test('Bot: return a default description if empty', (assert) => {
-  const bot = new Bot(configDist);
   assert.equal(ResponseTransformer.transformDescription(''), 'Ticket does not contain a description');
   assert.end();
 });
 
 test('Bot: replace quotes', (assert) => {
-  const bot = new Bot(configDist);
   assert.equal(ResponseTransformer.transformDescription('{quote}foo{quote}'), '```foo```');
   assert.end();
 });
 
 test('Bot: replace code blocks', (assert) => {
-  const bot = new Bot(configDist);
   assert.equal(ResponseTransformer.transformDescription('{code}foo{code}'), '```foo```');
   assert.end();
 });
