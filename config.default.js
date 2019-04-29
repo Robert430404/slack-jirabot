@@ -12,8 +12,6 @@ const config = {
     strictSSL: false,
     regex: '([A-Z][A-Z0-9]+-[0-9]+)',
     sprintField: '',
-    disablePretext: true,
-    disableFootnote: true,
     customFields: {
 
     },
@@ -23,6 +21,8 @@ const config = {
     token: 'xoxb-Your-Token',
     autoReconnect: true
   },
+  disablePretext: true,
+  disableFootnote: true,
   usermap: {}
 };
 module.exports = config;
