@@ -63,7 +63,6 @@ test('Bot: translate a jira username to a slack username', (assert) => {
 
   const bot = new Bot(configDist);
 
-
   assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'foo'), '@bar');
   assert.equal(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'ping'), '@pong');
   assert.notOk(ResponseTransformer.transformJiraUsernameToSlackUsername(configDist.usermap, 'blap'));
@@ -316,7 +315,7 @@ test('Bot: Check formatting', (assert) => {
     }
   };
 
-  const expectedText = '`Status: Open` `Priority: Low`\n *Heading*\n\nFoo foo _foo_ foo foo foo\n' +
+  const expectedText = '`Status: Open` `Priority: Low`: \n *Heading*\n\nFoo foo _foo_ foo foo foo\n' +
     '• Bulleted List\n  • Indented more\n• Indented less\n\n' +
     '• Bulleted Dash List\n• Bulleted Dash List\n• Bulleted Dash List\n\n' +
     '1. Numbered List\n' +
